@@ -1,0 +1,18 @@
+{
+  "name": "cstyler",
+  "version": "1.0.0",
+  "description": "Chainable terminal text styling tool (bold, colors, etc.)",
+  "main": "index.js",
+  "keywords": [
+    "console",
+    "style",
+    "color",
+    "chainable",
+    "bold",
+    "style",
+    "styler"
+  ],
+  "author": "MD Nasiruddin Ahmed",
+  "license": "ISC",
+  "type": "commonjs"
+}
