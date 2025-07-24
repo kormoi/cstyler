@@ -14,5 +14,13 @@
   ],
   "author": "MD Nasiruddin Ahmed",
   "license": "ISC",
-  "type": "commonjs"
+  "type": "commonjs",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kormoi/cstyler"
+  },
+  "bugs": {
+    "url": "https://github.com/kormoi/cstyler/issues"
+  },
+  "homepage": "https://github.com/kormoi/cstyler#readme"
 }
