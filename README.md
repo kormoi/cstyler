@@ -20,4 +20,8 @@ USE:
 console.log(cstyle.bold.underline.italic.dark.yellow("Here goes your text"));
 
 Feel free to use.
+<<<<<<< HEAD
 Regards from kormoi.com
+=======
+Regards from kormoi.com
+>>>>>>> 7cb483c (Second commit)
