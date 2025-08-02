@@ -1,7 +1,7 @@
 # CSTYLER
 Hello World!
 
-You can style with color and style on the console text with this package
+Style your console log with your cstyler package by kormoi.com
 
 This cstyler kit is fully free to use. You can colorize your console log useing this kit. You can use dot notation to add more style like 'bold, underline, italic, dark(for color), bg for background'. You have all red, green, blue, yellow, cyan, purpal, colors on both text color and background color.
 
