@@ -1,12 +1,22 @@
 class cstyler {
   constructor() {
-    // Basic ANSI styles map
+    this.namedColors = {
+      pink: "#ff007f",
+      cyan: "#00ffff",
+      magenta: "#ff00ff",
+      orange: "#ffa500",
+      white: "#ffffff",
+      // Add more named colors here if needed
+    };
+
     this.styleMap = {
+      // Text styles
       bold: ['\x1b[1m', '\x1b[22m'],
       italic: ['\x1b[3m', '\x1b[23m'],
       underline: ['\x1b[4m', '\x1b[24m'],
       dark: ['\x1b[2m', '\x1b[22m'],
 
+      // Foreground colors
       red: ['\x1b[31m', '\x1b[39m'],
       green: ['\x1b[32m', '\x1b[39m'],
       yellow: ['\x1b[33m', '\x1b[39m'],
@@ -14,6 +24,7 @@ class cstyler {
       purpal: ['\x1b[35m', '\x1b[39m'],
       gray: ['\x1b[30m', '\x1b[39m'],
 
+      // Background colors
       bgRed: ['\x1b[41m', '\x1b[49m'],
       bgGreen: ['\x1b[42m', '\x1b[49m'],
       bgYellow: ['\x1b[43m', '\x1b[49m'],
@@ -22,143 +33,124 @@ class cstyler {
       bgGray: ['\x1b[40m', '\x1b[49m']
     };
 
+    // Add named colors dynamically as getters (foreground)
+    for (const [name, hex] of Object.entries(this.namedColors)) {
+      Object.defineProperty(this, name, {
+        get: () => this.hex(hex)
+      });
+    }
+
     return this.createStyler([]);
   }
 
   createStyler(styles) {
     const styler = (text) => {
-      // Wrap text with all collected styles in order
       return styles.reduce((str, styleCode) => styleCode.open + str + styleCode.close, text);
     };
 
-    // Helper to add a new style in chain
     const addStyle = (open, close) => this.createStyler([...styles, { open, close }]);
 
-    // Dynamically add style properties to chain calls
+    // Attach all styles in styleMap
     for (const [name, [open, close]] of Object.entries(this.styleMap)) {
       Object.defineProperty(styler, name, {
-        get: () => addStyle(open, close),
+        get: () => addStyle(open, close)
       });
     }
 
-    // Proxy to catch invalid style chains
-    const proxy = new Proxy(styler, {
-      get: (target, prop) => {
-        if (prop in target) return target[prop];
-        console.warn(`Warning: Unknown style '${String(prop)}' used. Ignoring.`);
-        return target; // no-op to continue chain safely
-      },
-      apply: (target, thisArg, args) => {
-        if (args.length === 0) return "";
-        return target(args[0]);
-      },
-    });
-
-    // Attach tagged template literal parser for inline style
-    proxy[Symbol.call] = proxy; // make callable
-
-    proxy.inlineStyle = (strings, ...values) => {
-      const raw = strings.reduce((acc, str, i) => acc + str + (values[i] ?? ''), '');
-
-      // Parse and replace inline style tags with ANSI codes
-      return this.parseInlineStyles(raw);
+    // RGB support
+    styler.rgb = (r, g, b) => {
+      if (![r, g, b].every(n => Number.isInteger(n) && n >= 0 && n <= 255)) {
+        console.error('Invalid RGB value. Falling back to white.');
+        return addStyle('\x1b[37m', '\x1b[39m'); // white
+      }
+      const open = `\x1b[38;2;${r};${g};${b}m`;
+      const close = '\x1b[39m';
+      return addStyle(open, close);
     };
 
-    // Enable calling proxy as tagged template: cstyler`...`
-    const taggedTemplateHandler = (strings, ...values) => proxy.inlineStyle(strings, ...values);
-    Object.setPrototypeOf(taggedTemplateHandler, proxy);
+    // Hex color support
+    styler.hex = (hex) => {
+      try {
+        if (typeof hex !== 'string') throw new Error();
+        hex = hex.replace('#', '').slice(0, 6);
+        const r = parseInt(hex.slice(0, 2), 16);
+        const g = parseInt(hex.slice(2, 4), 16);
+        const b = parseInt(hex.slice(4, 6), 16);
+        return styler.rgb(r, g, b);
+      } catch (e) {
+        console.error('Invalid hex color. Falling back to white.');
+        return addStyle('\x1b[37m', '\x1b[39m'); // white
+      }
+    };
 
-    return taggedTemplateHandler;
-  }
+    // Background RGB
+    styler.bgrgb = (r, g, b) => {
+      if (![r, g, b].every(n => Number.isInteger(n) && n >= 0 && n <= 255)) {
+        console.error('Invalid background RGB value. Falling back to white.');
+        return addStyle('\x1b[47m', '\x1b[49m');
+      }
+      const open = `\x1b[48;2;${r};${g};${b}m`;
+      const close = '\x1b[49m';
+      return addStyle(open, close);
+    };
 
-  parseInlineStyles(text) {
-    // Parse text with nested {styles ...} blocks with support for nested tags
-    // Safe fallback: unknown styles ignored
+    // Background Hex
+    styler.bghex = (hex) => {
+      try {
+        if (typeof hex !== 'string') throw new Error();
+        hex = hex.replace('#', '').slice(0, 6);
+        const r = parseInt(hex.slice(0, 2), 16);
+        const g = parseInt(hex.slice(2, 4), 16);
+        const b = parseInt(hex.slice(4, 6), 16);
+        return styler.bgrgb(r, g, b);
+      } catch (e) {
+        console.error('Invalid background hex. Falling back to white.');
+        return addStyle('\x1b[47m', '\x1b[49m');
+      }
+    };
 
-    // Regex to find outermost style blocks (handles nested by recursive parser)
-    const parse = (input) => {
-      let output = "";
-      let i = 0;
+    // HSL support
+    styler.hsl = (h, s, l) => {
+      if (
+        typeof h !== "number" || typeof s !== "number" || typeof l !== "number" ||
+        h < 0 || h > 360 || s < 0 || s > 100 || l < 0 || l > 100
+      ) {
+        console.error('Invalid HSL value. Falling back to white.');
+        return styler.rgb(255, 255, 255); // fallback white
+      }
+      const { r, g, b } = cstyler.hslToRgb(h, s, l);
+      return styler.rgb(r, g, b);
+    };
 
-      while (i < input.length) {
-        if (input[i] === '{') {
-          // Find matching closing brace accounting nested braces
-          let level = 1;
-          let j = i + 1;
-          while (j < input.length && level > 0) {
-            if (input[j] === '{') level++;
-            else if (input[j] === '}') level--;
-            j++;
-          }
-          if (level !== 0) {
-            // Unmatched brace, output literally
-            output += input.slice(i, j);
-            i = j;
-            continue;
-          }
-
-          // Extract content inside braces, e.g. "bold.red Hello {underline nested}"
-          const inside = input.slice(i + 1, j - 1).trim();
-
-          // Separate style names from text:
-          // styles are the leading words separated by dots until first space
-          // rest is the text to style
-          const firstSpace = inside.indexOf(' ');
-          if (firstSpace === -1) {
-            // No space found, treat whole inside as style with empty text
-            output += this.applyStyles(inside, "");
-          } else {
-            const stylePart = inside.slice(0, firstSpace);
-            const textPart = inside.slice(firstSpace + 1);
-
-            // Recursively parse text part (to support nested styles)
-            const parsedText = parse(textPart);
-
-            output += this.applyStyles(stylePart, parsedText);
-          }
-
-          i = j;
+    // Proxy for safe fallbacks
+    return new Proxy(styler, {
+      get(target, prop) {
+        if (prop in target) {
+          return target[prop];
         } else {
-          // Plain text, copy until next {
-          const nextBrace = input.indexOf('{', i);
-          if (nextBrace === -1) {
-            output += input.slice(i);
-            break;
-          } else {
-            output += input.slice(i, nextBrace);
-            i = nextBrace;
-          }
+          console.log(`Wrong style: ${String(prop)}`);
+          console.error(`Invalid property accessor used: ${String(prop)}`);
+          return target; // safe fallback to unstyled
         }
       }
-
-      return output;
-    };
-
-    return parse(text);
+    });
   }
 
-  applyStyles(styleStr, text) {
-    // styleStr: e.g. "bold.red.bgBlue"
-    // text: string to wrap
+  // Static helper to convert HSL to RGB
+  static hslToRgb(h, s, l) {
+    s /= 100;
+    l /= 100;
 
-    if (!styleStr) return text;
+    const k = n => (n + h / 30) % 12;
+    const a = s * Math.min(l, 1 - l);
+    const f = n =>
+      l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1)));
 
-    const styles = styleStr.split('.');
-    let openCodes = "";
-    let closeCodes = "";
-
-    for (const styleName of styles) {
-      const codes = this.styleMap[styleName];
-      if (codes) {
-        openCodes += codes[0];
-        closeCodes = codes[1] + closeCodes; // close in reverse order
-      } else {
-        // Unknown style - skip, safe fallback
-        // Could log warning here if you want
-      }
-    }
-
-    return openCodes + text + closeCodes;
+    return {
+      r: Math.round(255 * f(0)),
+      g: Math.round(255 * f(8)),
+      b: Math.round(255 * f(4)),
+    };
   }
 }
 
