@@ -1,6 +1,6 @@
 {
   "name": "cstyler",
-  "version": "1.0.1",
+  "version": "2.0.0",
   "description": "Chainable terminal text styling tool (bold, colors, etc.)",
   "main": "index.js",
   "keywords": [
