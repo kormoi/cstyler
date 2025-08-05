@@ -101,8 +101,3 @@ class cstyler {
 
 
 module.exports = new cstyler();
-
-const cstyle = new cstyler();
-
-console.log(cstyle.bgrgb(255, 140, 0).bold('Orange RGB'));
-console.log(cstyle.hex('#00ff0dff').underline('HEX Color'));
