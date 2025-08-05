@@ -10,7 +10,16 @@
     "chainable",
     "bold",
     "style",
-    "styler"
+    "styler",
+    "ansi",
+    "colors",
+    "terminal",
+    "styling",
+    "cli",
+    "template",
+    "rgb",
+    "hex",
+    "hsl"
   ],
   "author": "MD Nasiruddin Ahmed",
   "license": "ISC",
