@@ -21,6 +21,8 @@ console.log(cstyle.bold.underline.italic.dark.yellow("Here goes your text"));
 
 You can add these colors by name: red, green, blue, yellow, purpal, grey. You can darken them with a .dark property accessor. You can add rbg, hex, bgrgb and bghex color using .hex('#123456'), and rgb(100,100,100) and same for bg hex and bg rgb. You can also add nested styling with inline styling with a backtick: cstyle`{bold.red Hello} {bold.green World! {italic Hi. This is kormoi.com}}`
 
+You can add these colors by name: red, green, blue, yellow, purpal, grey. You can darken them with a .dark property accessor. You can add rbg, hex, bgrgb and bghex color using .hex('#123456'), and rgb(100,100,100) and same for bg hex and bg rgb. You can also add nested styling with inline styling with a backtick: cstyle`{bold.red Hello} {bold.green World! {italic Hi. This is kormoi.com}}`
+
 Feel free to use.
 <<<<<<< HEAD
 Regards from kormoi.com
