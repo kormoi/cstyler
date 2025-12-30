@@ -19,7 +19,7 @@
 ```bash
 npm install cstyler
 ```
-# 🛠 Usage1.
+## 🛠 Usage
 ### 1. Basic Styling (Chainable)
 You can combine text styles and colors using simple dot notation.
 JavaScript
@@ -54,17 +54,18 @@ console.log(cstyler`
 `);
 ```
 🎨 Available Styles
-Category | Available Properties
-Formatting | bold, italic, underline, dark
-Colors | red, green, blue, yellow, purple, cyan, white, gray, magenta
-Backgrounds | bgRed, bgGreen, bgBlue, bgYellow, bgPurple, bgGray
-Custom | .hex(), .rgb(), .bgHex(), .bgRgb()
+| Category | Available Properties |
+| :--- | :--- |
+| **Formatting** | bold, italic, underline, dark |
+| **Colors** | red, green, blue, yellow, purple, cyan, white, gray, magenta |
+| **Backgrounds** | bgRed, bgGreen, bgBlue, bgYellow, bgPurple, bgGray |
+| **Custom** | .hex(), .rgb(), .bgHex(), .bgRgb() |
 
->> Note: You cannot use two foreground colors at once (e.g., red.blue). The last color in the chain will take priority.
+> Note: You cannot use two foreground colors at once (e.g., red.blue). The last color in the chain will take priority.
 
 ## 🛡 Smart Terminal Detection
-```js cstyler``` is smart. If you pipe your output to a file or run it in an environment that doesn't support ANSI colors, it will **silently return plain text.** Your logs will remain clean and readable without any "garbage" characters.
+cstyler is smart. If you pipe your output to a file or run it in an environment that doesn't support ANSI colors, it will **silently return plain text.** Your logs will remain clean and readable without any "garbage" characters.
 ## 👨‍💻 Author
 ### MD NASIRUDDIN AHMED
 Visit us at: kormoi.com
-- Feel free to use and contribute! Regards from kormoi.com.
+Feel free to use and contribute! Regards from kormoi.com.
