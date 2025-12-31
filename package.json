@@ -1,9 +1,9 @@
 {
   "name": "cstyler",
-  "version": "4.0.1",
+  "version": "4.0.2",
   "funding": {
     "type": "individual",
-    "url": "https://www.patreon.com/cw/kormoi"
+    "url": "https://www.patreon.com/cw/kormoi/membership"
   },
   "description": "Chainable terminal text styling tool (bold, colors, etc.)",
   "main": "index.js",
