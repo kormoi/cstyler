@@ -23,7 +23,12 @@
     "template",
     "rgb",
     "hex",
-    "hsl"
+    "hsl",
+    "cstyler",
+    "cst",
+    "csty",
+    "cstyle",
+    "cstyler"
   ],
   "author": "MD Nasiruddin Ahmed",
   "license": "ISC",
